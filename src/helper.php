@@ -1,9 +1,9 @@
 <?php
 function dd(){
     foreach(func_get_args() as $arg){
-        echo'<prev>';
+        echo'<pre>';
         var_dump($arg);
-        echo'</prev>';
+        echo'</pre>';
     }
-    die();
+    die;
 }
