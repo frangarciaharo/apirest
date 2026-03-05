@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BooksController;
+
 return [
     [
         'method'=> 'GET',

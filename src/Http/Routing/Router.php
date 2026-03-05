@@ -21,6 +21,12 @@ class Router{
         }
     }
     private function matchUri(string $routepath, string $requestUri, &$params):bool{
-        
+        $pattern = preg_replace('#\{{\w+}\}#', '(?P<$1>[^/+])',$routepath);
+        $pattern = "#^".$pattern."$#";
+        if(preg_match($pattern, $requestUri, $matches)){
+            $params = array_filter($matches, fn($key)=>is_string($key), ARRAY_FILTER_USE_KEY);
+            return true;
+        }
+        return false;
     }
 }
