@@ -2,6 +2,7 @@
 
 namespace App\Http\Routing;
 use App\Http\Request;
+use App\Http\ResponseJson;
 
 class Router{
     private RouteCollection $routeCollection;
@@ -12,16 +13,22 @@ class Router{
     }
     function dispatch(Request $request){
         $routes=$this->routeCollection->getRoutes();
+        $found=false;
         foreach ($routes as $route){
             if($route['method']===strtoupper($request->getMethod()) && $this->matchUri($route['path'], $request->getUri(), $params)){
+                $found=true;
                 [$controllerClass, $action]=$route['handler'];
                 $controller = new $controllerClass($request);
                 call_user_func_array([$controller, $action], $params);
             }
         }
+        if(!$found){
+            $response=new ResponseJson(4004,['msg' => 'Route Not Found']);
+            $response->send();
+        }
     }
     private function matchUri(string $routepath, string $requestUri, &$params):bool{
-        $pattern = preg_replace('#\{{\w+}\}#', '(?P<$1>[^/+])',$routepath);
+        $pattern = preg_replace('#\{(\w+)\}#', '(?P<$1>[^/+])',$routepath);
         $pattern = "#^".$pattern."$#";
         if(preg_match($pattern, $requestUri, $matches)){
             $params = array_filter($matches, fn($key)=>is_string($key), ARRAY_FILTER_USE_KEY);

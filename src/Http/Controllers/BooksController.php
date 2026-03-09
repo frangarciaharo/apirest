@@ -3,15 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Request;
-use App\Http\Response;
+use App\Http\ResponseJson;
 
 class BooksController{
     function index(){
         $books=[
-            ['title'=>'Lo que el bitcoin se llevo'],
-            ['title'=>'Yo de ti lo de-java']
+            [
+                'id'=>'boo-1',
+                'title'=>'Lo que el bitcoin se llevo'
+            ],
+            [
+                'id'=>'boo-1',
+                'title'=>'Yo de ti lo de-java'
+            ]
         ];
-        $response= new Response(200, ['Content-Type:application/json'], $books);
+        $response= new ResponseJson(200, $books);
         $response->send();
     }
     function create(Request $request){
