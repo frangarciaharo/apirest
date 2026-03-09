@@ -13,7 +13,7 @@ class BooksController{
                 'title'=>'Lo que el bitcoin se llevo'
             ],
             [
-                'id'=>'boo-1',
+                'id'=>'boo-2',
                 'title'=>'Yo de ti lo de-java'
             ]
         ];
