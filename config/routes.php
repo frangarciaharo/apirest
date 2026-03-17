@@ -15,7 +15,7 @@ return [
     ],
     [
         'method'=> 'POST',
-        'path'=> '/api/books/{id}',
+        'path'=> '/api/books',
         'handler'=>[BooksController::class, 'create']
     ],
     [

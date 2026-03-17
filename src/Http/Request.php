@@ -21,4 +21,9 @@ final class Request{
     public function getUri(){
         return $this->uri;
     } 
+    public function getBody(){
+        if($this->body){
+            return $this->body;
+        }
+    }
 }
