@@ -23,10 +23,12 @@ use Doctrine\ORM\Mapping\Entity;
         #[Column(type:'boolean')]
         private bool $available=true;
 
-        function __construct(BookId $id, string $title)
+        function __construct(BookId $id, string $title, string $author, bool $available)
         {
             $this->id=(string)$id;
             $this->title=$title;
+            $this->author=$author;
+            $this->available=$available;
         }
         
         public function setTitle(string $title):void
@@ -48,6 +50,19 @@ use Doctrine\ORM\Mapping\Entity;
             }
         }
 
+        public function setAuthor(string $author){
+             if(empty(trim($author))){
+                throw new \InvalidArgumentException("Title cannot be empty");
+            }
+            $this->author = $author;
+        }
+        public function SetStatus(bool $available){
+            if(empty(trim($available))){
+                throw new \InvalidArgumentException("Title cannot be empty");
+            }
+            $this->available = $available;
+        }
+
         public function toArray(): array{
             return [
                 'id'=>$this->id, 
@@ -55,8 +70,5 @@ use Doctrine\ORM\Mapping\Entity;
                 'author'=>$this->author,
                 'available'=>$this->available
             ];
-        }
-        public function get(){
-            
         }
     }
