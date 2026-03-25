@@ -27,6 +27,14 @@ final class DoctrineBookRepository implements IBookRepository{
     public function save(Book $book): void
     {
         $this->em->persist($book);
-    
+        $this->em->flush();
+    }
+    public function update(BookId $id): void{
+        $this->em->persist($id);
+        $this->em->flush();
+    }
+    public function delete(Book $book): void{
+        $this->em->remove($book);
+        $this->em->flush();
     }
 }

@@ -10,5 +10,6 @@ interface IBookRepository{
     public function save(Book $book):void;
     public function find(BookId $id):?Book;
     public function findAll(): array;
-    
+    public function update(BookId $id);
+    public function delete(Book $book);
 }
