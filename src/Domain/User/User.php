@@ -4,11 +4,16 @@ namespace App\Domain\User;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Course\Course;
+use App\Domain\Teacher\Teacher;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
 class User {
 
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
     #[ORM\Column(type: 'string')]
     private string $name;
 
@@ -21,7 +26,6 @@ class User {
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    #[ORM\Id]
     #[ORM\Column(type: 'string', unique: true)]
     private string $dni;
 
@@ -34,6 +38,9 @@ class User {
     #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'users')]
     #[ORM\JoinColumn(name: 'code_course', referencedColumnName: 'code_course', nullable: true)]
     private ?Course $course = null;
+
+    #[Orm\OneToOne(mappedBy: 'user', targetEntity: Teacher::class)]
+    private ?Teacher $teacher = null;
 
     public function __construct(
         string $name,
@@ -102,6 +109,10 @@ class User {
             throw new \InvalidArgumentException("Invalid birthdate");
         }
         $this->birthdate = $birthdate;
+    }
+
+    public function id(): ?int {
+        return $this->id;
     }
 
     public function enrollStudent(Course $course): void {

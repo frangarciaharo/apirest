@@ -51,47 +51,47 @@ class UserController{
         (new ResponseJson(200, ["msg" => "Usuario creado correctamente"]))->send();
     }
 
-public function update(string $dni): void {
-    $data = $this->request->getBody();
-    $user = $this->br->find($dni);
+    public function updatewithid(string $id): void {
+        $data = $this->request->getBody();
+        $user = $this->br->find($id);
 
-    if ($user === null) {
-        (new ResponseJson(404, ["msg" => "Usuario no encontrado"]))->send();
-        return;
-    }
-
-    try {
-            if (isset($data['name'])) {
-                $user->setName($data['name']);
-            }
-
-            if (isset($data['lastname'])) {
-                $user->setLastname($data['lastname']);
-            }
-
-            if (isset($data['email'])) {
-                $user->setEmail($data['email']);
-            }
-
-            if (isset($data['password'])) {
-                $user->setPassword($data['password']);
-            }
-
-            if (isset($data['role'])) {
-                $user->setRole($data['role']);
-            }
-
-            if (isset($data['birthdate'])) {
-                $user->setBirthdate($data['birthdate']);
-            }
-
-            $this->br->save($user);
-
-            (new ResponseJson(200, ["msg" => "Usuario actualizado correctamente"]))->send();
-
-        } catch (\InvalidArgumentException $e) {
-            (new ResponseJson(400, ["msg" => $e->getMessage()]))->send();
+        if ($user === null) {
+            (new ResponseJson(404, ["msg" => "Usuario no encontrado"]))->send();
+            return;
         }
+
+        try {
+                if (isset($data['name'])) {
+                    $user->setName($data['name']);
+                }
+
+                if (isset($data['lastname'])) {
+                    $user->setLastname($data['lastname']);
+                }
+
+                if (isset($data['email'])) {
+                    $user->setEmail($data['email']);
+                }
+
+                if (isset($data['password'])) {
+                    $user->setPassword($data['password']);
+                }
+
+                if (isset($data['role'])) {
+                    $user->setRole($data['role']);
+                }
+
+                if (isset($data['birthdate'])) {
+                    $user->setBirthdate($data['birthdate']);
+                }
+
+                $this->br->save($user);
+
+                (new ResponseJson(200, ["msg" => "Usuario actualizado correctamente"]))->send();
+
+            } catch (\InvalidArgumentException $e) {
+                (new ResponseJson(400, ["msg" => $e->getMessage()]))->send();
+            }
     }
     function delete(String $dni){
         $user = $this->br->find($dni);
