@@ -1,19 +1,27 @@
 <?php
+
 namespace App\Domain\User;
 
-class UserId{
-    private string $id;
-    function __construct(string $id)
+class UserId
+{
+    private int $id;
+
+    public function __construct(int $id)
     {
-        $this->id=$id;
+        if ($id <= 0) {
+            throw new \InvalidArgumentException("Invalid UserId");
+        }
+
+        $this->id = $id;
     }
 
-    function __toString():string
+    public function value(): int
     {
         return $this->id;
-
     }
-    function value():string{
-        return $this->id;
+
+    public function __toString(): string
+    {
+        return (string) $this->id;
     }
 }
