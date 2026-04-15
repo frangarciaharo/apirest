@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Persistence\Doctrine;
 
-use App\Domain\User\UserId;
 use App\Domain\User\User;
 use App\Domain\User\IUserRepository;
 use Doctrine\ORM\EntityManagerInterface;

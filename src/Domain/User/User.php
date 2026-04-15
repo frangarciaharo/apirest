@@ -2,32 +2,48 @@
 
 namespace App\Domain\User;
 
-use App\Domain\Course\CourseCode;
-use Doctrine\ORM\Mapping as Orm;
-use Doctrine\ORM\Query\Expr\Func;
+use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Course\Course;
 
-#[Orm\Entity]
-#[Orm\Table(name: 'users')]
-class User{
-    #[Orm\Column(type: 'string')]
+#[ORM\Entity]
+#[ORM\Table(name: 'users')]
+class User {
+
+    #[ORM\Column(type: 'string')]
     private string $name;
-    #[Orm\Column(type: 'string')]
+
+    #[ORM\Column(type: 'string')]
     private string $lastname;
-    #[Orm\Column(type: 'string')]
+
+    #[ORM\Column(type: 'string')]
     private string $email;
-    #[Orm\Column(type: 'string')]
+
+    #[ORM\Column(type: 'string')]
     private string $password;
-    #[Orm\Id, Orm\Column(type: 'string', unique: true)]
+
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', unique: true)]
     private string $dni;
-    #[Orm\Column(type: 'string')]
+
+    #[ORM\Column(type: 'string')]
     private string $role;
-    #[Orm\Column(type: 'string')]
+
+    #[ORM\Column(type: 'string')]
     private string $birthdate;
-    #[Orm\Column(type: 'string', nullable: true)]
-    private ?CourseCode $coursecode = null;
-    
-    public function __construct(string $name, string $lastname, string $email, string $password, string $dni, string $role, string $birthdate)
-    {
+
+    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'users')]
+    #[ORM\JoinColumn(name: 'code_course', referencedColumnName: 'code_course', nullable: true)]
+    private ?Course $course = null;
+
+    public function __construct(
+        string $name,
+        string $lastname,
+        string $email,
+        string $password,
+        string $dni,
+        string $role,
+        string $birthdate
+    ) {
         $this->setName($name);
         $this->setLastname($lastname);
         $this->setEmail($email);
@@ -37,149 +53,81 @@ class User{
         $this->setBirthdate($birthdate);
     }
 
-    public function setName(string $name): void
-    {
-
-        if (empty(trim($name))) {
-            throw new \InvalidArgumentException("Name cannot be empty");
-        }
-        if(strlen($name) < 3){
-            throw new \InvalidArgumentException("Name must be at least 3 characters long");
+    public function setName(string $name): void {
+        if (empty(trim($name)) || strlen($name) < 3) {
+            throw new \InvalidArgumentException("Invalid name");
         }
         $this->name = $name;
     }
 
-    public function setLastname(string $lastname): void
-    {
-        if (empty(trim($lastname))) {
-            throw new \InvalidArgumentException("Lastname cannot be empty");
-        }
-        if(strlen($lastname) < 4){
-            throw new \InvalidArgumentException("Lastname must be at least 4 characters long");
+    public function setLastname(string $lastname): void {
+        if (empty(trim($lastname)) || strlen($lastname) < 4) {
+            throw new \InvalidArgumentException("Invalid lastname");
         }
         $this->lastname = $lastname;
     }
 
-    public function setPassword(string $password): void
-    {
-        if (empty(trim($password))) {
-            throw new \InvalidArgumentException("Password cannot be empty");
-        }else{
-            if(strlen($password) < 6){
-                throw new \InvalidArgumentException("Password must be at least 6 characters long");
-            }else{
-                $password = password_hash($password, PASSWORD_DEFAULT);
-                $this->password = $password;
-            }
-        }
-    }
-
-   public function setEmail(string $email): string
-    {
+    public function setEmail(string $email): void {
         $email = trim($email);
-
-        if ($email === '') {
-            throw new \InvalidArgumentException("Email cannot be empty");
-        }
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException("Invalid email");
         }
-
-        return $this->email = $email;
+        $this->email = $email;
     }
 
-
-    public function setDni(string $dni): void{
-        $dni = trim($dni);
-        if ($dni === '') {
-            throw new \InvalidArgumentException("DNI cannot be empty");
+    public function setPassword(string $password): void {
+        if (strlen(trim($password)) < 6) {
+            throw new \InvalidArgumentException("Password too short");
         }
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    public function setDni(string $dni): void {
         if (!preg_match('/^[0-9]{8}[A-Za-z]$/', $dni)) {
-            throw new \InvalidArgumentException("Invalid DNI format");
+            throw new \InvalidArgumentException("Invalid DNI");
         }
         $this->dni = $dni;
     }
 
-    public function setRole(string $role): void{
+    public function setRole(string $role): void {
         $validRoles = ['admin', 'teacher', 'student'];
-        $role = trim($role);
-        if ($role === '') {
-            throw new \InvalidArgumentException("Role Empty");
-        }
         if (!in_array($role, $validRoles)) {
-            throw new \InvalidArgumentException("Invalid role specified");
+            throw new \InvalidArgumentException("Invalid role");
         }
         $this->role = $role;
     }
 
-    public function setBirthdate(string $birthdate): void{
+    public function setBirthdate(string $birthdate): void {
         if (!preg_match('/^\d{2}-\d{2}-\d{4}$/', $birthdate)) {
-            throw new \InvalidArgumentException("Birthdate must be in DD-MM-YYYY format");
+            throw new \InvalidArgumentException("Invalid birthdate");
         }
         $this->birthdate = $birthdate;
     }
 
-    public function enrollStudent(CourseCode $coursecode):void{
-        $this->coursecode = $coursecode;
-    }
-     public function UnrollStudent(): void{
-        $this->coursecode = null;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
+    public function enrollStudent(Course $course): void {
+        if ($this->role === 'teacher') {
+            throw new \DomainException("Teacher cannot have a course");
+        }
+        $this->course = $course;
     }
 
-    public function lastname(): string
-    {
-        return $this->lastname;
+    public function unrollStudent(): void {
+        $this->course = null;
     }
 
-    public function email(): string
-    {
-        return $this->email;
+    public function course(): ?Course {
+        return $this->course;
     }
 
-    public function password(): string
-    {
-        return $this->password;
-    }
-
-    public function dni(): string
-    {
-        return $this->dni;
-    }
-
-    public function role(): string
-    {
-        return $this->role;
-    }
-
-    public function birthdate(): string
-    {
-        return $this->birthdate;
-    }
-
-      public function coursecode(): ?CourseCode
-    {
-        return $this->coursecode;
-    }
-    
-
-
-    public function toArray(): array
-    {
+    public function toArray(): array {
         return [
             'name' => $this->name,
             'lastname' => $this->lastname,
             'email' => $this->email,
-            'password' => $this->password,
             'dni' => $this->dni,
             'role' => $this->role,
             'birthdate' => $this->birthdate,
-            'coursecode' => $this->coursecode
+            'course' => $this->course?->getCodeCourse()
         ];
     }
 }

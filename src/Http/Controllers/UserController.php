@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Domain\User\User;
-use App\Domain\User\UserId;
 use App\Http\Request;
 use App\Http\ResponseJson;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,13 +24,8 @@ class UserController{
     }
     function show(String $dni) {
         $userrepo = $this->br;
-
-        $data = $this->request->getBody();
-
         $user = $userrepo->find($dni);
-
-        $response = new ResponseJson(200, $user->toArray());
-        $response->send();
+        (new ResponseJson(200,$user->toArray()))->send();
     }
 
     function create()
@@ -40,7 +34,7 @@ class UserController{
         $existingUser = $this->br->find($data['dni']);
 
         if ($existingUser !== null) {
-            return print("User with DNI " . $data['dni'] . " already exists.");
+            return new ResponseJson(404, ["msg" => "Este usuario existe"])->send();;
         }
 
         $user = new User(
@@ -50,57 +44,54 @@ class UserController{
             $data['password'],
             $data['dni'],
             $data['role'],
-            $data['birthdate'],
-            $data['coursecode']
+            $data['birthdate']
         );
 
         $this->br->save($user);
+        (new ResponseJson(200, ["msg" => "Usuario creado correctamente"]))->send();
     }
 
-    public function update(string $dni): void {
-        $data = $this->request->getBody();
-        $user = $this->br->find($dni);
-        if ($user == null) {
-            new ResponseJson(404, ["msg" => "Usuario no encontrado"])->send();
-            return;
-        }
-        $errors = [];
+public function update(string $dni): void {
+    $data = $this->request->getBody();
+    $user = $this->br->find($dni);
 
-        if (!isset($data['name'])) {
-            $errors[] = "Falta el nombre";
-        }
+    if ($user === null) {
+        (new ResponseJson(404, ["msg" => "Usuario no encontrado"]))->send();
+        return;
+    }
 
-        if (!isset($data['lastname'])) {
-            $errors[] = "Falta el apellido";
-        }
+    try {
+            if (isset($data['name'])) {
+                $user->setName($data['name']);
+            }
 
-       if (!isset($data['email'])) {
-            $errors[] = "Falta el email";
+            if (isset($data['lastname'])) {
+                $user->setLastname($data['lastname']);
+            }
+
+            if (isset($data['email'])) {
+                $user->setEmail($data['email']);
+            }
+
+            if (isset($data['password'])) {
+                $user->setPassword($data['password']);
+            }
+
+            if (isset($data['role'])) {
+                $user->setRole($data['role']);
+            }
+
+            if (isset($data['birthdate'])) {
+                $user->setBirthdate($data['birthdate']);
+            }
+
+            $this->br->save($user);
+
+            (new ResponseJson(200, ["msg" => "Usuario actualizado correctamente"]))->send();
+
+        } catch (\InvalidArgumentException $e) {
+            (new ResponseJson(400, ["msg" => $e->getMessage()]))->send();
         }
-        if (!isset($data['password'])) {
-            $errors[] = "Falta la contraseña";
-        }
-        if (!isset($data['dni'])) {
-            $errors[] = "Falta el DNI";
-        }
-        if (!isset($data['role'])) {
-            $errors[] = "Falta el rol";
-        }
-        if (!isset($data['birthdate'])) {
-            $errors[] = "Falta la fecha de nacimiento";
-        }
-        if (!empty($errors)) {
-            (new ResponseJson(400, ["msg" => $errors]))->send();
-            return;
-        }
-        $user->setName($data['name']);
-        $user->setLastname($data['lastname']);
-        $user->setEmail($data['email']);
-        $user->setPassword($data['password']);
-        $user->setDni($data['dni']);
-        $user->setRole($data['role']);
-        $user->setBirthdate($data['birthdate']);
-        $this->br->save($user);
     }
     function delete(String $dni){
         $user = $this->br->find($dni);

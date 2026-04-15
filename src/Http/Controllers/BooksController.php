@@ -31,6 +31,10 @@ class BooksController{
     function show(String $id){
         $bookrepo = $this->br;
         $book = $bookrepo->find(new BookId($id), $bookrepo);
+        if ($book == null) {
+            new ResponseJson(404, ["msg" => "Libro no encontrado"])->send();
+            return;
+        }
         $response= new ResponseJson(200, $book->toArray());
         $response->send();
     }

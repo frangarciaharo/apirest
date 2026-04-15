@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BooksController;
+use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\UserController;
 
 return [
@@ -53,6 +54,31 @@ return [
         'method'=> 'DELETE',
         'path'=> '/api/users/{dni}',
         'handler'=>[UserController::class, 'delete']
+    ],
+        [
+        'method'=> 'GET',
+        'path'=> '/api/courses',
+        'handler'=>[CoursesController::class, 'index']
+    ],
+    [
+        'method'=> 'GET',
+        'path'=> '/api/courses/{code_course}',
+        'handler'=>[CoursesController::class, 'show']
+    ],
+    [
+        'method'=> 'POST',
+        'path'=> '/api/courses',
+        'handler'=>[CoursesController::class, 'create']
+    ],
+    [
+        'method'=> 'PUT',
+        'path'=> '/api/courses/{code_course}',
+        'handler'=>[CoursesController::class, 'update']
+    ],
+        [
+        'method'=> 'DELETE',
+        'path'=> '/api/courses/{code_course}',
+        'handler'=>[CoursesController::class, 'delete']
     ],
     
 
