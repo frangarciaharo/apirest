@@ -32,6 +32,10 @@ final class DoctrineUserRepository implements IUserRepository{
         $this->em->persist($user);
         $this->em->flush();
     }
+    public function updateWithId(String $id, User $user): void{
+        $this->em->persist($user);
+        $this->em->flush();
+    }
     public function deleteUser(String $dni): void{
         $user = $this->find($dni);
         if ($user) {
