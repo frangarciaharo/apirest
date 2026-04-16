@@ -22,16 +22,16 @@ class UserController{
         $response= new ResponseJson(200, $users);
         $response->send();
     }
-    function show(String $dni) {
+    function show(String $id){
         $userrepo = $this->br;
-        $user = $userrepo->find($dni);
+        $user = $userrepo->find($id);
         (new ResponseJson(200,$user->toArray()))->send();
     }
 
     function create()
     {
         $data = $this->request->getBody();
-        $existingUser = $this->br->find($data['dni']);
+        $existingUser = $this->br->findDni($data['dni']);
 
         if ($existingUser !== null) {
             return new ResponseJson(404, ["msg" => "Este usuario existe"])->send();;
@@ -51,15 +51,14 @@ class UserController{
         (new ResponseJson(200, ["msg" => "Usuario creado correctamente"]))->send();
     }
 
-    public function updatewithid(string $id): void {
+    public function update(int $id): void {
         $data = $this->request->getBody();
-        $user = $this->br->find($id);
+        $user = $this->br->findDni($id);
 
         if ($user === null) {
             (new ResponseJson(404, ["msg" => "Usuario no encontrado"]))->send();
             return;
         }
-
         try {
                 if (isset($data['name'])) {
                     $user->setName($data['name']);
@@ -84,7 +83,6 @@ class UserController{
                 if (isset($data['birthdate'])) {
                     $user->setBirthdate($data['birthdate']);
                 }
-
                 $this->br->save($user);
 
                 (new ResponseJson(200, ["msg" => "Usuario actualizado correctamente"]))->send();

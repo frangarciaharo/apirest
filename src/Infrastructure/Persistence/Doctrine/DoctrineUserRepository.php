@@ -12,10 +12,14 @@ final class DoctrineUserRepository implements IUserRepository{
     ){
         
     }  
-    
-    public function find(String $dni): ?User
+    public function findDni(String $dni): ?User
     {
-        return $this->em->find(User::class, $dni);
+        $repository = $this->em->getRepository(User::class);
+        return $repository->findOneBy(['dni' => $dni]);
+    }
+    public function find(int $id): ?User
+    {
+        return $this->em->find(User::class, $id);
     } 
     public function findAll(): array{
         $repository = $this->em->getRepository(User::class);
@@ -28,16 +32,12 @@ final class DoctrineUserRepository implements IUserRepository{
         $this->em->persist($user);
         $this->em->flush();
     }
-    public function update(String $dni, User $user): void{
+    public function update(int $id, User $user): void{
         $this->em->persist($user);
         $this->em->flush();
     }
-    public function updateWithId(String $id, User $user): void{
-        $this->em->persist($user);
-        $this->em->flush();
-    }
-    public function deleteUser(String $dni): void{
-        $user = $this->find($dni);
+    public function deleteUser(int $id): void{
+        $user = $this->find($id);
         if ($user) {
             $this->em->remove($user);
         }

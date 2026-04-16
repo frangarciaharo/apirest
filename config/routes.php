@@ -40,7 +40,7 @@ return [
     ],
     [
         'method'=> 'GET',
-        'path'=> '/api/users/{dni}',
+        'path'=> '/api/users/{id}',
         'handler'=>[UserController::class, 'show']
     ],
     [
@@ -50,12 +50,12 @@ return [
     ],
     [
         'method'=> 'PUT',
-        'path'=> '/api/users/{dni}',
+        'path'=> '/api/users/{id}',
         'handler'=>[UserController::class, 'update']
     ],
-        [
+    [
         'method'=> 'DELETE',
-        'path'=> '/api/users/{dni}',
+        'path'=> '/api/users/{id}',
         'handler'=>[UserController::class, 'delete']
     ],
     // COURSE

@@ -44,7 +44,7 @@ class TeacherController{
 
         try {
             $user->setRole('teacher');
-            $this->userRepository->updateWithId($data['user_id'], $user);
+            $this->userRepository->update($data['user_id'], $user);
 
             $teacher = new Teacher($data['code_teacher'], $user);
             $this->br->save($teacher);
