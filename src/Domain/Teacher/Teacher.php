@@ -11,9 +11,9 @@ class Teacher{
     #[Orm\Column(type: 'string', length: 5)]
     private string $code;
 
-    #[Orm\OneToOne(targetEntity: User::class)]
-    #[Orm\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
-    private User $user;
+    #[Orm\OneToOne(inversedBy: 'teacher', targetEntity: User::class)]
+    #[Orm\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private ?User $user = null;
 
     public function __construct(string $code, User $user) {
         $this->code = $code;

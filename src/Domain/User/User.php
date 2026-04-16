@@ -39,7 +39,12 @@ class User {
     #[ORM\JoinColumn(name: 'code_course', referencedColumnName: 'code_course', nullable: true)]
     private ?Course $course = null;
 
-    #[Orm\OneToOne(mappedBy: 'user', targetEntity: Teacher::class)]
+    #[Orm\OneToOne(
+        mappedBy: 'user',
+        targetEntity: Teacher::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     private ?Teacher $teacher = null;
 
     public function __construct(

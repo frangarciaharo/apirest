@@ -53,7 +53,7 @@ class UserController{
 
     public function update(int $id): void {
         $data = $this->request->getBody();
-        $user = $this->br->findDni($id);
+        $user = $this->br->find($id);
 
         if ($user === null) {
             (new ResponseJson(404, ["msg" => "Usuario no encontrado"]))->send();
@@ -91,12 +91,13 @@ class UserController{
                 (new ResponseJson(400, ["msg" => $e->getMessage()]))->send();
             }
     }
-    function delete(String $dni){
-        $user = $this->br->find($dni);
+    function delete(int $id){
+        $user = $this->br->find($id);
         if ($user == null) {
             new ResponseJson(404, ["msg" => "Usuario no encontrado"])->send();
             return;
         }
-        $this->br->deleteUser($dni); 
+        $this->br->deleteUser($id); 
+        (new ResponseJson(200, ["msg" => "Usuario eliminado correctamente"]))->send();
     }
 }

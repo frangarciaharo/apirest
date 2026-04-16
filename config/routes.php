@@ -4,6 +4,7 @@ use App\Http\Controllers\BooksController;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\SubjectController;
 
 return [
     // BOOK
@@ -104,6 +105,31 @@ return [
         'method'=> 'DELETE',
         'path'=> '/api/teachers/{code_teacher}',
         'handler'=>[TeacherController::class, 'delete']
+    ], // SUBJECT
+    [
+        'method'=> 'GET',
+        'path'=> '/api/subjects',
+        'handler'=>[SubjectController::class, 'index']
+    ],
+    [
+        'method'=> 'GET',
+        'path'=> '/api/subjects/{code}',
+        'handler'=>[SubjectController::class, 'show']
+    ],
+    [
+        'method'=> 'POST',
+        'path'=> '/api/subjects',
+        'handler'=>[SubjectController::class, 'create']
+    ],
+    [
+        'method'=> 'PUT',
+        'path'=> '/api/subjects/{code}',
+        'handler'=>[SubjectController::class, 'update']
+    ],
+        [
+        'method'=> 'DELETE',
+        'path'=> '/api/subjects/{code}',
+        'handler'=>[SubjectController::class, 'delete']
     ],
 
 ];
