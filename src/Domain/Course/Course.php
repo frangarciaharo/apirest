@@ -5,6 +5,7 @@ namespace App\Domain\Course;
 use App\Domain\User\User;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Subject\Subject;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'courses')]
@@ -22,6 +23,9 @@ class Course
 
     #[ORM\Column(type: 'integer')]
     private int $duration;
+
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Subject::class)]
+    private Collection $subjects;
 
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: User::class)]
     private Collection $users;
