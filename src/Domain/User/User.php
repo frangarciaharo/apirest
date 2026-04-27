@@ -110,7 +110,7 @@ class User {
     }
 
     public function setRole(string $role): void {
-        $validRoles = ['admin', 'teacher', 'student', 'user'];
+        $validRoles = ['admin', 'teacher', 'student', 'guest'];
         if (!in_array($role, $validRoles)) {
             throw new \InvalidArgumentException("Invalid role");
         }
