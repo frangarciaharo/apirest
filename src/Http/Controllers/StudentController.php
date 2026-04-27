@@ -72,7 +72,7 @@ class StudentController{
         $id = $student->userid();
         $user = $this->userRepository->find($id);
         try {
-            $user->setRole('user');
+            $user->setRole('guest');
             $this->userRepository->update($id, $user);
 
             $this->br->delete($code_student);
