@@ -1,10 +1,12 @@
 <?php
 
+use App\Domain\Student\Student;
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\StudentController;
 
 return [
     // BOOK
@@ -130,6 +132,27 @@ return [
         'method'=> 'DELETE',
         'path'=> '/api/subjects/{code}',
         'handler'=>[SubjectController::class, 'delete']
+    ],  
+    // STUDENT
+    [
+        'method'=> 'GET',
+        'path'=> '/api/students',
+        'handler'=>[StudentController::class, 'index']
     ],
+    [
+        'method'=> 'GET',
+        'path'=> '/api/students/{code_student}',
+        'handler'=>[StudentController::class, 'show']
+    ],
+    [
+        'method'=> 'POST',
+        'path'=> '/api/students',
+        'handler'=>[StudentController::class, 'create']
+    ],
+    [
+        'method'=> 'DELETE',
+        'path'=> '/api/students/{code_student}',
+        'handler'=>[StudentController::class, 'delete']
+    ]
 
 ];

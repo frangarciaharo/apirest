@@ -5,6 +5,7 @@ namespace App\Domain\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\Course\Course;
 use App\Domain\Teacher\Teacher;
+use App\Domain\Student\Student;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
@@ -46,6 +47,13 @@ class User {
         orphanRemoval: true
     )]
     private ?Teacher $teacher = null;
+    #[ORM\OneToOne(
+        mappedBy: 'user',
+        targetEntity: Student::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private ?Student $student = null;
 
     public function __construct(
         string $name,
@@ -102,7 +110,7 @@ class User {
     }
 
     public function setRole(string $role): void {
-        $validRoles = ['admin', 'teacher', 'student'];
+        $validRoles = ['admin', 'teacher', 'student', 'user'];
         if (!in_array($role, $validRoles)) {
             throw new \InvalidArgumentException("Invalid role");
         }
