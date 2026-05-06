@@ -145,6 +145,7 @@ class User {
 
     public function toArray(): array {
         return [
+            'id'=> $this->id,
             'name' => $this->name,
             'lastname' => $this->lastname,
             'email' => $this->email,
