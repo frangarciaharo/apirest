@@ -126,7 +126,7 @@ class Subject
             'code_subject' => $this->code,
             'namesubject' => $this->namesubject,
             'duration' => $this->duration,
-            'code_teacher' => $this->getTeacherCode(),
+            'teacher' => $this->teacher ? $this->teacher->toArray() : null,
             'course' => $this->course ? $this->course->toArray() : null
         ];
     }
