@@ -8,15 +8,18 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Domain\Subject\Subject;
 use App\Infrastructure\Persistence\Doctrine\DoctrineSubjectRepository;
 use App\Infrastructure\Persistence\Doctrine\DoctrineCourseRepository;
+use App\Infrastructure\Persistence\Doctrine\DoctrineTeacherRepository;
 class SubjectController{
     protected Request $request;
     protected DoctrineSubjectRepository $sr;
     protected DoctrineCourseRepository $cr;
+    protected DoctrineTeacherRepository $tr;
 
     public function __construct(Request $request, EntityManagerInterface $em){
         $this->request = $request;
         $this->sr = new DoctrineSubjectRepository($em);
         $this->cr = new DoctrineCourseRepository($em);
+        $this->tr = new DoctrineTeacherRepository($em);
     }
     function index(){
         $subjectrepo = $this->sr;
@@ -34,8 +37,13 @@ class SubjectController{
         if ($existingCourse === null) {
             return new ResponseJson(404, ["msg" => "Curso no encontrado"])->send();
         }
+        $existingTeacher = $this->tr->findByCode($data['code_teacher']);
+        if ($existingTeacher === null) {
+            return new ResponseJson(404, ["msg" => "Profesor no encontrado"])->send();
+        }
         $subject = new Subject($data['code_subject'], $data['name_subject'], $data['duration']);
         $subject->setCourse($existingCourse);
+        $subject->assignTeacher($existingTeacher);
         $this->sr->save($subject);
         (new ResponseJson(200, ["msg" => "Materia creada correctamente"]))->send();
     }
