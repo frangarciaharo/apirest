@@ -58,35 +58,44 @@ class SubjectController{
         $response->send();
     }
     public function update(string $code): void {
+
         $data = $this->request->getBody();
+
         $subject = $this->sr->findByCode($code);
+
         if ($subject == null) {
             new ResponseJson(404, ["msg" => "Subject not found"])->send();
             return;
         }
-        $errors = [];
 
-        if (!isset($data['code_subject'])) {
-            $errors[] = "Falta el codigo de la materia";
-        }
-
-        if (!isset($data['name_subject'])) {
-            $errors[] = "Falta el nombre de la materia";
-        }
-
-        if (!isset($data['duration'])) {
-            $errors[] = "Falta la duración";
-        }
-
-        if (!empty($errors)) {
-            (new ResponseJson(400, ["msg" => $errors]))->send();
-            return;
-        }
         $subject->setCode($data['code_subject']);
         $subject->setNamesubject($data['name_subject']);
         $subject->setDuration($data['duration']);
+
+        if (isset($data['code_teacher'])) {
+
+            $teacher = $this->tr->findByCode($data['code_teacher']);
+
+            if ($teacher != null) {
+                $subject->assignTeacher($teacher);
+            }
+        }
+
+        if (isset($data['code_course'])) {
+
+            $course = $this->cr->findByCode($data['code_course']);
+
+            if ($course != null) {
+                $subject->setCourse($course);
+            }
+        }
+
         $this->sr->save($subject);
-        (new ResponseJson(200, ["msg" => "Materia actualizada correctamente"]))->send();
+
+        (new ResponseJson(
+            200,
+            ["msg" => "Materia actualizada correctamente"]
+        ))->send();
     }
     function delete(String $code){
         $subject = $this->sr->findByCode($code);
