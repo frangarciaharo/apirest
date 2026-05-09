@@ -152,7 +152,7 @@ class User {
             'dni' => $this->dni,
             'role' => $this->role,
             'birthdate' => $this->birthdate,
-            'course' => $this->course?->getCodeCourse()
+            'course_code' => $this->course?->getCodeCourse()
         ];
     }
 }
