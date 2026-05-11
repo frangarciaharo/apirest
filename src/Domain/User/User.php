@@ -128,14 +128,14 @@ class User {
         return $this->id;
     }
 
-    public function enrollStudent(Course $course): void {
-        if ($this->role === 'teacher') {
-            throw new \DomainException("Teacher cannot have a course");
+    public function enroll(Course $course): void {
+        if ($this->role === 'guest') {
+            throw new \DomainException("Guest cannot have a course");
         }
         $this->course = $course;
     }
 
-    public function unrollStudent(): void {
+    public function unroll(): void {
         $this->course = null;
     }
 

@@ -102,6 +102,10 @@ return [
         'method'=> 'POST',
         'path'=> '/api/teachers',
         'handler'=>[TeacherController::class, 'create']
+    ],[
+        'method'=> 'PUT',
+        'path'=> '/api/teachers/{code_teacher}',
+        'handler'=>[TeacherController::class, 'update']
     ],
     [
         'method'=> 'DELETE',

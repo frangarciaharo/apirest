@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Request;
 use App\Http\ResponseJson;
 use Doctrine\ORM\EntityManagerInterface;
@@ -54,7 +53,7 @@ class StudentController{
             $this->userRepository->update($data['user_id'], $user);
 
             $student = new Student($data['code_student'], $user);
-            $user->enrollStudent($existingCourse);
+            $user->enroll($existingCourse);
             $this->br->save($student);
 
             return (new ResponseJson(200, ["msg" => "Estudiante creado correctamente"]))->send();
@@ -95,7 +94,7 @@ class StudentController{
             return (new ResponseJson(404, ["msg" => "Curso no encontrado"]))->send();
         }
 
-        $user->enrollStudent($course);
+        $user->enroll($course);
         $this->userRepository->update($data['user_id'], $user);
         $this->br->update($student);
         return (new ResponseJson(200, ["msg" => "Actualizado"]))->send();
@@ -109,8 +108,9 @@ class StudentController{
         $user = $this->userRepository->find($id);
         try {
             $user->setRole('guest');
+            $user->unroll();
             $this->userRepository->update($id, $user);
-
+    
             $this->br->delete($code_student);
             (new ResponseJson(200, ["msg" => "Estuidante eliminado correctamente"]))->send();
 
