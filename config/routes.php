@@ -149,6 +149,11 @@ return [
         'path'=> '/api/students',
         'handler'=>[StudentController::class, 'create']
     ],
+        [
+        'method'=> 'PUT',
+        'path'=> '/api/students/{code_student}',
+        'handler'=>[StudentController::class, 'update']
+    ],
     [
         'method'=> 'DELETE',
         'path'=> '/api/students/{code_student}',

@@ -28,6 +28,11 @@ final class DoctrineStudentRepository implements IStudentRepository{
         $this->em->persist($student);
         $this->em->flush();
     }
+    public function update(Student $student): void
+    {
+        $this->em->persist($student);
+        $this->em->flush();
+    }
     public function delete(string $code): void{
         $student = $this->findByCode($code);
         if ($student) {
