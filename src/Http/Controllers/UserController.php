@@ -34,7 +34,7 @@ class UserController{
         $existingUser = $this->br->findDni($data['dni']);
 
         if ($existingUser !== null) {
-            return new ResponseJson(404, ["msg" => "Este usuario existe"])->send();;
+            return new ResponseJson(409, ["msg" => "Este usuario ya existe"])->send();
         }
 
         $user = new User(
